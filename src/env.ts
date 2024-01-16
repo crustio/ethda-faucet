@@ -4,6 +4,7 @@ export const env = {
     rpcUrl: getEnv('RPC_URL', 'https://rpc-devnet.ethda.io'),
     transferValue: getEnv('VALUE', '0.1'),
     secretKey: getEnv('SECRET_KEY'),
+    indexHistory: getEnv('HISTORY_INDEX', 'true'),
     dbPath: getEnv('DB_PATH', '/app'),
     channelId: getEnv('CHANNEL_ID', '1192017639493603369'),
     token: getEnv('TOKEN', ''),

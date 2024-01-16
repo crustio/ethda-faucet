@@ -1,8 +1,9 @@
 import {ethers, parseUnits, Wallet} from "ethers";
-import {Message, MessageState} from "../db";
 import * as _ from "lodash";
 import {env} from "../env";
 import {sleep} from "../util/common";
+import {Message} from "discord.js";
+import {MessageModel, MessageState} from "../model/message";
 const PROVIDER = new ethers.JsonRpcProvider(env.rpcUrl);
 const DEFAULT_VALUE = env.transferValue;
 
@@ -30,7 +31,7 @@ async function transfer(address: string, value: string = DEFAULT_VALUE): Promise
 export async function transferJob() {
     while (startTransfer) {
         try {
-            const messages = await Message.findAll({
+            const messages = await MessageModel.findAll({
                 where: {
                     state: MessageState.CREATE,
                 },
@@ -41,8 +42,9 @@ export async function transferJob() {
             });
             if (!_.isEmpty(messages)) {
                 for (const m of messages) {
+                    console.log(`transfer to account: ${m.getDataValue('account')} value: ${DEFAULT_VALUE}`)
                     const r = await transfer(m.getDataValue('account'), DEFAULT_VALUE);
-                    await Message.update(
+                    await MessageModel.update(
                         {
                             state: MessageState.TRANSFERRED,
                             value: DEFAULT_VALUE,

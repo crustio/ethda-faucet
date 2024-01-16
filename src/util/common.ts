@@ -2,7 +2,7 @@ import {isAddress} from "ethers";
 import {env} from "../env";
 
 export function getEnv(value: string, defaultValue: string = ''): string {
-  return process.env[value] || defaultValue;
+  return process.env[value]?? defaultValue;
 }
 
 export function sleep(ms: number) {
