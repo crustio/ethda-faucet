@@ -4,6 +4,7 @@ import {env} from "../env";
 import {sleep} from "../util/common";
 import {Message} from "discord.js";
 import {MessageModel, MessageState} from "../model/message";
+import {getChannel, sendReplyMessage} from "../discord";
 const PROVIDER = new ethers.JsonRpcProvider(env.rpcUrl);
 const DEFAULT_VALUE = env.transferValue;
 
@@ -44,6 +45,11 @@ export async function transferJob() {
                 for (const m of messages) {
                     console.log(`transfer to account: ${m.getDataValue('account')} value: ${DEFAULT_VALUE}`)
                     const r = await transfer(m.getDataValue('account'), DEFAULT_VALUE);
+                    const txHash = r.txHash;
+                    const messageId = m.getDataValue('messageId');
+                    if (messageId) {
+                        await sendReplyMessage(txHash, messageId);
+                    }
                     await MessageModel.update(
                         {
                             state: MessageState.TRANSFERRED,

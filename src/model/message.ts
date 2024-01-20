@@ -22,6 +22,11 @@ export const MessageModel = sequelize.define("message", {
         autoIncrement: true,
         primaryKey: true
     },
+    messageId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
     authorId: {
         type: DataTypes.STRING,
         allowNull: false,

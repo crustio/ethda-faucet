@@ -8,6 +8,7 @@ export const env = {
     dbPath: getEnv('DB_PATH', '/app'),
     channelId: getEnv('CHANNEL_ID', '1192017639493603369'),
     token: getEnv('TOKEN', ''),
+    blockScanUrl: getEnv('BLOCK_SCAN_URL', 'https://scan-devnet.ethda.io'),
     callUserId: getEnv('FAUCET_CALL_USER_ID', '1193830903496065024'),
     env: getEnv('ENV', 'dev')
 }

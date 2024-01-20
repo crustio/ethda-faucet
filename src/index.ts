@@ -21,7 +21,6 @@ start().catch(e => {
 });
 
 schedule.scheduleJob('0 0 * * * *', async () => {
-    console.log('start...');
     await indexHistoryMessageJob();
 });
 
