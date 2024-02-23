@@ -16,24 +16,30 @@ export interface TransferResult {
 }
 
 async function transfer(address: string, value: string = DEFAULT_VALUE): Promise<TransferResult | null> {
-    const signer = new Wallet(env.secretKey, PROVIDER);
-    const tx = await signer.sendTransaction({
-        to: address,
-        value: parseUnits(value, 'ether')
-    });
-    console.log(`transfer to ${address} value: ${value}...`);
-    await sleep(1000 * 2);
-    const txData = await tx.getTransaction();
-    if (txData == null) {
-        return null
-    } else {
-        console.log(`transaction: ${JSON.stringify(txData)}`)
-        return {
-            txHash: txData.hash,
-            blockNumber: txData.blockNumber
+    try {
+        const signer = new Wallet(env.secretKey, PROVIDER);
+        const tx = await signer.sendTransaction({
+            to: address,
+            value: parseUnits(value, 'ether')
+        });
+        console.log(`transfer to ${address} value: ${value}...`);
+        await sleep(1000);
+        const txData = await tx.getTransaction();
+        if (txData == null) {
+            console.log(`transaction is empty...`)
+            return null
+        } else {
+            console.log(`transaction: ${JSON.stringify(txData)}`)
+            return {
+                txHash: txData.hash,
+                blockNumber: txData.blockNumber
+            }
         }
+    } catch (e) {
+        console.log(`transfer err...`);
+        console.error(e);
+        return null;
     }
-
 }
 
 export async function transferJob() {
