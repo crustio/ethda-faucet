@@ -3,7 +3,8 @@ import {sequelize} from "../db";
 
 export enum MessageState {
     CREATE,
-    TRANSFERRED
+    TRANSFERRED,
+    ERROR
 }
 
 export interface Message {

@@ -15,7 +15,7 @@ export interface TransferResult {
     blockNumber: number
 }
 
-async function transfer(address: string, value: string = DEFAULT_VALUE): Promise<TransferResult> {
+async function transfer(address: string, value: string = DEFAULT_VALUE): Promise<TransferResult | null> {
     const signer = new Wallet(env.secretKey, PROVIDER);
     const tx = await signer.sendTransaction({
         to: address,
@@ -23,10 +23,16 @@ async function transfer(address: string, value: string = DEFAULT_VALUE): Promise
     });
     console.log(`transfer to ${address} value: ${value}...`);
     const txData = await tx.getTransaction();
-    return {
-        txHash: txData.hash,
-        blockNumber: txData.blockNumber
+    if (txData == null) {
+        return null
+    } else {
+        console.log(`transaction: ${JSON.stringify(txData)}`)
+        return {
+            txHash: txData.hash,
+            blockNumber: txData.blockNumber
+        }
     }
+
 }
 
 export async function transferJob() {
@@ -45,6 +51,17 @@ export async function transferJob() {
                 for (const m of messages) {
                     console.log(`transfer to account: ${m.getDataValue('account')} value: ${DEFAULT_VALUE}`)
                     const r = await transfer(m.getDataValue('account'), DEFAULT_VALUE);
+                    if (r == null) {
+                        await MessageModel.update(
+                            {
+                                state: MessageState.ERROR,
+                            }, {
+                                where: {
+                                    id: m.getDataValue('id')
+                                }
+                            })
+                        continue;
+                    }
                     const txHash = r.txHash;
                     const messageId = m.getDataValue('messageId');
                     if (messageId) {
