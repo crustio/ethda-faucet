@@ -22,6 +22,7 @@ async function transfer(address: string, value: string = DEFAULT_VALUE): Promise
         value: parseUnits(value, 'ether')
     });
     console.log(`transfer to ${address} value: ${value}...`);
+    await sleep(1000 * 2);
     const txData = await tx.getTransaction();
     if (txData == null) {
         return null
@@ -81,6 +82,7 @@ export async function transferJob() {
                 }
             }
         } catch (e) {
+            console.log(`transfer error...`);
             console.error(e);
             await sleep(10 * 1000);
         } finally {
