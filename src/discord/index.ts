@@ -28,6 +28,15 @@ export async function listenMessageJob() {
     });
     client.on('messageCreate', async (message) => {
         if (message.channelId === env.channelId) {
+            const existAuthorMsg = await MessageModel.findOne({
+                where: {
+                    authorId: message.author.id
+                }
+            });
+            if (existAuthorMsg) {
+                await sendReplyMessage(message.id, `Thank you for your message!   Please note that each user is limited to one submission.   We appreciate your understanding and cooperation.`)
+                return;
+            }
             const account = parseAccount(message.content);
             if (account) {
                 console.log(`create author: ${message.author.id} account: ${account}`);
@@ -48,7 +57,15 @@ export async function listenMessageJob() {
     await client.login(env.token);
 }
 
-export async function sendReplyMessage(txHash: string, messageId: string) {
+export async function sendReplyMessage(messageId: string, content: string) {
+    const channel = getChannel();
+    await channel.send({content, reply: {
+            messageReference: messageId
+        }});
+}
+
+
+export async function sendReplyTxMessage(txHash: string, messageId: string) {
     const channel = getChannel();
     await channel.send({content: `:white_check_mark: [Check here](${env.blockScanUrl}/tx/${txHash})`,
         reply: {

@@ -4,7 +4,7 @@ import {env} from "../env";
 import {sleep} from "../util/common";
 import {Message} from "discord.js";
 import {MessageModel, MessageState} from "../model/message";
-import {getChannel, sendReplyMessage} from "../discord";
+import {getChannel, sendReplyTxMessage} from "../discord";
 const PROVIDER = new ethers.JsonRpcProvider(env.rpcUrl);
 const DEFAULT_VALUE = env.transferValue;
 
@@ -72,7 +72,7 @@ export async function transferJob() {
                     const txHash = r.txHash;
                     const messageId = m.getDataValue('messageId');
                     if (messageId) {
-                        await sendReplyMessage(txHash, messageId);
+                        await sendReplyTxMessage(txHash, messageId);
                     }
                     await MessageModel.update(
                         {
